@@ -1,6 +1,9 @@
 import Foundation
 
 public struct TicTacToeBoard: Hashable {
+
+    // MARK: BoardValue
+
     public enum BoardValue {
         case x
         case o
@@ -18,14 +21,16 @@ public struct TicTacToeBoard: Hashable {
         }
     }
 
-    public typealias Board = [BoardValue]
-    public private(set) var board: Board = Array(repeating: BoardValue.none, count: 9)
+    // MARK: Properties
 
-    public mutating func makeMove(atIndex index: Int, forPlayer player: Player) {
-        board[index] = player == .x ? .x : .o
-    }
+    public typealias Board = [BoardValue]
+    private var board: Board = Array(repeating: BoardValue.none, count: 9)
+
+    // MARK: Initialization
 
     public init() {}
+
+    // MARK: Finding and Making Moves
 
     public func availableMoves() -> [Int] {
         return board
@@ -33,6 +38,12 @@ public struct TicTacToeBoard: Hashable {
             .filter { $0.element == .none }
             .map { $0.offset }
     }
+
+    public mutating func makeMove(atIndex index: Int, forPlayer player: Player) {
+        board[index] = player == .x ? .x : .o
+    }
+
+    // MARK: Determining Board Outcome
 
     public enum Outcome {
         case x
@@ -75,6 +86,8 @@ public struct TicTacToeBoard: Hashable {
         }
     }
 
+    // MARK: Displaying The Board
+    
     public func printBoard() {
         let displayableBoard = board.map { $0.displayValue }
         print("\(displayableBoard[0]) \(displayableBoard[1]) \(displayableBoard[2])")
@@ -84,16 +97,13 @@ public struct TicTacToeBoard: Hashable {
         print("*************")
     }
 
-}
-
-extension TicTacToeBoard {
+    // MARK: Hashable
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(self.board)
     }
-    
+
     public static func == (lhs: TicTacToeBoard, rhs: TicTacToeBoard) -> Bool {
         return lhs.board == rhs.board
     }
-
 }
