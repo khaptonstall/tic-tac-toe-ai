@@ -9,7 +9,7 @@ public struct TicTacToeBoard: Hashable {
         case o
         case none
 
-        var displayValue: String {
+        public var displayValue: String {
             switch self {
             case .x:
                 return "X"
