@@ -1,46 +1,68 @@
 import Foundation
+import PlaygroundSupport
+import SwiftUI
 
 /**
  A Swift playground demonstrating a minimax algorithm for playing tic-tac-toe.
  Possible improvements:
  - Reduce number of force-unwraps by gracefully handling indicies
- - Add UI for a human player
  - Determine draws faster rather than playing out game when a winner is no longer possible.
  */
 
-/// The tic tac toe game board.
-var board = TicTacToeBoard()
+struct TicTacToeBoardGameView: View {
 
-/// Plays through an automated game of TicTacToe, running a minimax algorithm for each player,
-/// where X is the maximizing player and O is the minimizing player.
-func playMinimaxTicTacToe() {
-    var currentPlayer = Player.x
-    while board.evaluateOutcome() == nil {
-        board.printBoard()
+    @State var board = TicTacToeBoard()
 
-        // For each turn find the best move, play it, then switch over to the other player.
-        switch currentPlayer {
-        case .o:
-            let move = minimax(board: board, player: currentPlayer).index!
-            board.makeMove(atIndex: move, forPlayer: .o)
-            currentPlayer = .x
-        case .x:
-            let move = minimax(board: board, player: currentPlayer).index!
-            board.makeMove(atIndex: move, forPlayer: .x)
-            currentPlayer = .o
-        }
+    var body: some View {
+        VStack {
+            HStack {
+                self.createButton(forIndex: 0)
+                self.createButton(forIndex: 1)
+                self.createButton(forIndex: 2)
+            }
+            HStack {
+                self.createButton(forIndex: 3)
+                self.createButton(forIndex: 4)
+                self.createButton(forIndex: 5)
+            }
+            HStack {
+                self.createButton(forIndex: 6)
+                self.createButton(forIndex: 7)
+                self.createButton(forIndex: 8)
+            }
+
+            Button("Reset") {
+                self.board = TicTacToeBoard()
+            }
+        }.frame(width: 300, height: 300)
     }
 
-    board.printBoard()
+    private func createButton(forIndex index: Int) -> some View {
+        return Button(board.boardValue(forIndex: index).displayValue) {
+            guard board.boardValue(forIndex: index) == .none else {
+                return
+            }
 
-    switch board.evaluateOutcome()! {
-    case .o:
-        print("O won...")
-    case .x:
-        print("X won!")
-    case .draw:
-        print("It's a draw.")
+            self.board.makeMove(atIndex: index, forPlayer: .o)
+            self.playComputerMove()
+        }.frame(width: 44, height: 44)
+    }
+
+    private func playComputerMove() {
+        guard board.evaluateOutcome() == nil else {
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard let move = minimax(board: board, player: .x).index else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                board.makeMove(atIndex: move, forPlayer: .x)
+            }
+        }
     }
 }
 
-playMinimaxTicTacToe()
+PlaygroundPage.current.setLiveView(TicTacToeBoardGameView())
