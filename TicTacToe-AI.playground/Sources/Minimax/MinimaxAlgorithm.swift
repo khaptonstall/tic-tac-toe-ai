@@ -22,9 +22,9 @@ public func minimax(board: TicTacToeBoard, player: Player) -> Move {
     if let outcome = board.evaluateOutcome() {
         switch outcome {
         case .o:
-            return Move(index: nil, value: -1 * moves.count)
+            return Move(index: nil, value: min(-1 * moves.count, -1))
         case .x:
-            return Move(index: nil, value: 1 * moves.count)
+            return Move(index: nil, value: max(1 * moves.count, 1))
         case .draw:
             return Move(index: nil, value: 0)
         }

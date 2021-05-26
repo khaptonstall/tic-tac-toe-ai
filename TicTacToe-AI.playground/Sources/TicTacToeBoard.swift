@@ -9,7 +9,7 @@ public struct TicTacToeBoard: Hashable {
         case o
         case none
 
-        var displayValue: String {
+        public var displayValue: String {
             switch self {
             case .x:
                 return "X"
@@ -62,7 +62,7 @@ public struct TicTacToeBoard: Hashable {
         (1, 4, 7),
         (2, 5, 8),
         // Winning by diagonal
-        (0, 4, 7),
+        (0, 4, 8),
         (2, 4, 6)
     ]
 
@@ -95,6 +95,10 @@ public struct TicTacToeBoard: Hashable {
         print("\(displayableBoard[6]) \(displayableBoard[7]) \(displayableBoard[8])")
 
         print("*************")
+    }
+
+    public func boardValue(forIndex index: Int) -> BoardValue {
+        return self.board[index]
     }
 
     // MARK: Hashable
