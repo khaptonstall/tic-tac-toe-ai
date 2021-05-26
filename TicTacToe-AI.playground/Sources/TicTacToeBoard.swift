@@ -97,6 +97,10 @@ public struct TicTacToeBoard: Hashable {
         print("*************")
     }
 
+    public func boardValue(forIndex index: Int) -> BoardValue {
+        return self.board[index]
+    }
+
     // MARK: Hashable
 
     public func hash(into hasher: inout Hasher) {
